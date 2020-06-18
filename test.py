@@ -54,13 +54,14 @@ parser.add_argument('--poly', default=False, action='store_true', help='enable p
 parser.add_argument('--show_time', default=False, action='store_true', help='show processing time')
 parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
 parser.add_argument('--refine', default=False, action='store_true', help='enable link refiner')
+parser.add_argument('--catalog', default=False, action='store_true', help='catalog or folder')
 parser.add_argument('--refiner_model', default='/Users/dcohen/Downloads/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
 
 args = parser.parse_args()
 
 
 """ For test images in a folder """
-CATALOG = False
+CATALOG = args.catalog
 if CATALOG:
     dirs = os.listdir( args.test_folder )
     image_list = []
