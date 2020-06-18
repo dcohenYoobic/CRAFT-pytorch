@@ -55,6 +55,7 @@ parser.add_argument('--show_time', default=False, action='store_true', help='sho
 parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
 parser.add_argument('--refine', default=False, action='store_true', help='enable link refiner')
 parser.add_argument('--catalog', default=False, action='store_true', help='catalog or folder')
+parser.add_argument('--save-img', default=False, action='store_true', help='catalog or folder')
 parser.add_argument('--refiner_model', default='/Users/dcohen/Downloads/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
 
 args = parser.parse_args()
@@ -132,7 +133,7 @@ def test_net(net, image, text_threshold, link_threshold, low_text, cuda, poly, r
 
 if __name__ == '__main__':
     # load net
-    SAVE_IMG = True
+    SAVE_IMG = args.save_img
     net = CRAFT()     # initialize
 
     print('Loading weights from checkpoint (' + args.trained_model + ')')
