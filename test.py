@@ -54,13 +54,23 @@ parser.add_argument('--poly', default=False, action='store_true', help='enable p
 parser.add_argument('--show_time', default=False, action='store_true', help='show processing time')
 parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
 parser.add_argument('--refine', default=False, action='store_true', help='enable link refiner')
-parser.add_argument('--refiner_model', default='weights/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
+parser.add_argument('--refiner_model', default='/Users/dcohen/Downloads/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
 
 args = parser.parse_args()
 
 
 """ For test images in a folder """
-image_list, _, _ = file_utils.get_files(args.test_folder)
+CATALOG = False
+if CATALOG:
+    dirs = os.listdir( args.test_folder )
+    image_list = []
+    for sku in dirs:
+        path_dir = os.path.join(args.test_folder ,sku)
+        if os.path.isdir(path_dir):
+            temp_list, _, _ = file_utils.get_files(path_dir)
+            image_list.extend(temp_list)
+else:
+    image_list, _, _ = file_utils.get_files(args.test_folder)
 
 result_folder = './result/'
 if not os.path.isdir(result_folder):
@@ -121,6 +131,7 @@ def test_net(net, image, text_threshold, link_threshold, low_text, cuda, poly, r
 
 if __name__ == '__main__':
     # load net
+    SAVE_IMG = True
     net = CRAFT()     # initialize
 
     print('Loading weights from checkpoint (' + args.trained_model + ')')
@@ -164,8 +175,10 @@ if __name__ == '__main__':
         # save score text
         filename, file_ext = os.path.splitext(os.path.basename(image_path))
         mask_file = result_folder + "/res_" + filename + '_mask.jpg'
-        cv2.imwrite(mask_file, score_text)
+        if SAVE_IMG is True:
+            cv2.imwrite(mask_file, score_text)
 
-        file_utils.saveResult(image_path, image[:,:,::-1], polys, dirname=result_folder)
+        file_utils.saveResult(image_path, image[:,:,::-1], polys, dirname=result_folder,save_img=SAVE_IMG)
+        #file_utils.saveResult(image_path, image[:,:,::-1], bboxes, dirname=result_folder)
 
     print("elapsed time : {}s".format(time.time() - t))
